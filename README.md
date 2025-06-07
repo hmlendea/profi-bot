@@ -1,6 +1,10 @@
+[![Donate](https://img.shields.io/badge/-%E2%99%A5%20Donate-%23ff69b4)](https://hmlendea.go.ro/fund.html) [![Latest GitHub release](https://img.shields.io/github/v/release/hmlendea/profi-bot)](https://github.com/hmlendea/profi-bot/releases/latest)
+
 # About
 
 This is a Python script that interacts with the **Profi** mobile app ecosystem. Profi is a Romanian market store chain. This bot allows users to **scan a Profi QR code** (from a store checkout) and **register the purchase** to their account — just like the official app does — to earn cashback.
+
+Based on [whos-gabi/ProfiAppAPI-Exploit](https://github.com/whos-gabi/ProfiAppAPI-Exploit).
 
 ---
 
@@ -22,6 +26,7 @@ This is a Python script that interacts with the **Profi** mobile app ecosystem. 
    ```
 
 2. **Configure the bot**:
+
    Edit `config.json`
 
 3. **Run the script**:
