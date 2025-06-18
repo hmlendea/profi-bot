@@ -31,7 +31,7 @@ Based on [whos-gabi/ProfiAppAPI-Exploit](https://github.com/whos-gabi/ProfiAppAP
 
 3. **Run the script**:
    ```bash
-   python profi-bot.py
+   python main.py
    ```
 
 ---
