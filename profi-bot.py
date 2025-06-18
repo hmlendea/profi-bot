@@ -1,12 +1,15 @@
 import json
 import random
 import requests
+
 from urllib.parse import urlencode, parse_qs, urlsplit
+from bot_server import record_prize
 
 from config import (
     QR_CODE,
     PHONE_NUMBER,
     PASSWORD,
+    BOT_SERVER_BASE_URL,
     OAUTH2_BASE_URL,
     GAMES_BASE_URL,
     LOGIN_FORM_URL,
@@ -105,9 +108,9 @@ def play_game(auth_token, session):
 
     game_url = start_game_response_data['gameUrl']
 
-    win_status = parse_qs(urlsplit(game_url).query).get('win', [''])[0]
+    prize_won = parse_qs(urlsplit(game_url).query).get('win', [''])[0]
 
-    if win_status == 'true':
+    if prize_won == 'true':
         print("You have won this game!")
     else:
         print("You have lost this game!")
@@ -118,6 +121,10 @@ def play_game(auth_token, session):
     if redirect_response.status_code != 200:
         print("Failed to redirect!")
         print(f"Response: HTTP {redirect_response.status_code}")
+        return
+
+    if prize_won and BOT_SERVER_BASE_URL:
+        record_prize(session)
 
 # --- Main ---
 def main():

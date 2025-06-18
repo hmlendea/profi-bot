@@ -29,6 +29,7 @@ cfg = load_config()
 QR_CODE = cfg["qrCode"]
 PHONE_NUMBER = "4" + cfg["phoneNumber"]
 PASSWORD = cfg["password"]
+BOT_SERVER_BASE_URL = cfg["botServerBaseUrl"] if "botServerBaseUrl" in cfg else None
 
 # Constants
 OAUTH2_BASE_URL = 'https://auth.profi.lobyco.net/oauth2'
