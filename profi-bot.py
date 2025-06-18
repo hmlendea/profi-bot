@@ -100,9 +100,24 @@ def play_game(auth_token, session):
     data = response.json()
 
     game_id = data['gameId']
-    start_game_response = session.post(f"{GAMES_BASE_URL}/{game_id}/start", headers=headers).json()
-    win_status = parse_qs(urlsplit(start_game_response['gameUrl']).query).get('win', [''])[0]
-    print(f"Prize won: {win_status}")
+    start_game_response = session.post(f"{GAMES_BASE_URL}/{game_id}/start", headers=headers)
+    start_game_response_data = start_game_response.json()
+
+    game_url = start_game_response_data['gameUrl']
+
+    win_status = parse_qs(urlsplit(game_url).query).get('win', [''])[0]
+
+    if win_status == 'true':
+        print("You have won this game!")
+    else:
+        print("You have lost this game!")
+
+    redirect_url = parse_qs(urlsplit(game_url).query).get('redirectUrl', [''])[0]
+    redirect_response = session.post(redirect_url, headers=headers)
+
+    if redirect_response.status_code != 200:
+        print("Failed to redirect!")
+        print(f"Response: HTTP {redirect_response.status_code}")
 
 # --- Main ---
 def main():
