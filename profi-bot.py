@@ -76,6 +76,21 @@ def scan_qr_code(qr_code, auth_token, session):
         print("Failed to create the session!")
         print(f"Response: HTTP {response.status_code} - {data.get('messageTitle')} {data.get('messageBody')}")
 
+def play_game(auth_token, session):
+    headers = {'Authorization': f'Bearer {auth_token}'}
+    response = session.get(f"{GAMES_BASE_URL}/current", headers=headers)
+
+    if response.status_code == 204:
+        print('No game available')
+        return
+
+    data = response.json()
+
+    game_id = data['gameId']
+    start_game_response = session.post(f"{GAMES_BASE_URL}/{game_id}/start", headers=headers).json()
+    win_status = parse_qs(urlsplit(start_game_response['gameUrl']).query).get('win', [''])[0]
+    print(f"Prize won: {win_status}")
+
 # --- Main ---
 def load_config():
     with open('config.json') as f:
@@ -99,6 +114,9 @@ def main():
     with requests.Session() as session:
         print(f"Authorising +{phone_number}...")
         auth_token = get_auth_token(phone_number, password, session)
+
+        print(f"Playing the daily game...")
+        play_game(auth_token, session)
 
         print(f"Scanning QR code {qr_code}...")
         scan_qr_code(qr_code, auth_token, session)
