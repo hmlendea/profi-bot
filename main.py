@@ -123,7 +123,7 @@ def play_game(auth_token, session):
         print(f"Response: HTTP {redirect_response.status_code}")
         return
 
-    if prize_won and BOT_SERVER_BASE_URL:
+    if prize_won == "true" and BOT_SERVER_BASE_URL:
         record_prize(session)
 
 # --- Main ---
