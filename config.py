@@ -27,7 +27,7 @@ def load_config():
 cfg = load_config()
 
 QR_CODE = cfg["qrCode"]
-PHONE_NUMBER = "4" + cfg["phoneNumber"]
+PHONE_NUMBER = "4" + cfg["phoneNumber"] if cfg["phoneNumber"].startswith("07") else cfg["phoneNumber"]
 PASSWORD = cfg["password"]
 BOT_SERVER_BASE_URL = cfg["botServerBaseUrl"] if "botServerBaseUrl" in cfg else None
 
