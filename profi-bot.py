@@ -58,7 +58,14 @@ def get_auth_token(phone_number, password, session):
         'redirect_uri': REDIRECT_URI
     }
 
-    return session.post(f"{OAUTH2_BASE_URL}/token", data=token_data).json()['access_token']
+    token_response = session.post(f"{OAUTH2_BASE_URL}/token", data=token_data)
+    token_response_data = token_response.json()
+
+    if token_response.status_code != 200:
+        print("Failed to authenticate!")
+        print(f"Response: HTTP {response.status_code} - {token_response_data.get('error')} ({token_response_data.get('error_description')})")
+
+    return token_response_data['access_token']
 
 # --- QR Functions ---
 def check_in_qr(payment_location, auth_token, session):

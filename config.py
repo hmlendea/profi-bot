@@ -27,7 +27,7 @@ def load_config():
 cfg = load_config()
 
 QR_CODE = cfg["qrCode"]
-PHONE_NUMBER = cfg["phoneNumber"]
+PHONE_NUMBER = "4" + cfg["phoneNumber"]
 PASSWORD = cfg["password"]
 
 # Constants
