@@ -25,13 +25,17 @@ Based on [whos-gabi/ProfiAppAPI-Exploit](https://github.com/whos-gabi/ProfiAppAP
    cd profi-bot
    ```
 
-2. **Configure the bot**:
+2. **Install the requirements**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
+3. **Configure the bot**:
    Edit `config.json`
 
-3. **Run the script**:
+4. **Run the script**:
    ```bash
-   python profi-bot.py
+   python main.py
    ```
 
 ---
