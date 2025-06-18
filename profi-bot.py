@@ -89,11 +89,44 @@ def scan_qr_code(qr_code, auth_token, session):
         print("Failed to create the session!")
         print(f"Response: HTTP {response.status_code} - {data.get('messageTitle')} {data.get('messageBody')}")
 
+def play_game(auth_token, session):
+    headers = {'Authorization': f'Bearer {auth_token}'}
+    response = session.get(f"{GAMES_BASE_URL}/current", headers=headers)
+
+    if response.status_code == 204:
+        print('No game available')
+        return
+
+    data = response.json()
+
+    game_id = data['gameId']
+    start_game_response = session.post(f"{GAMES_BASE_URL}/{game_id}/start", headers=headers)
+    start_game_response_data = start_game_response.json()
+
+    game_url = start_game_response_data['gameUrl']
+
+    win_status = parse_qs(urlsplit(game_url).query).get('win', [''])[0]
+
+    if win_status == 'true':
+        print("You have won this game!")
+    else:
+        print("You have lost this game!")
+
+    redirect_url = parse_qs(urlsplit(game_url).query).get('redirectUrl', [''])[0]
+    redirect_response = session.post(redirect_url, headers=headers)
+
+    if redirect_response.status_code != 200:
+        print("Failed to redirect!")
+        print(f"Response: HTTP {redirect_response.status_code}")
+
 # --- Main ---
 def main():
     with requests.Session() as session:
         print(f"Authorising +{PHONE_NUMBER}...")
         auth_token = get_auth_token(PHONE_NUMBER, PASSWORD, session)
+
+        print(f"Playing the daily game...")
+        play_game(auth_token, session)
 
         print(f"Scanning QR code {QR_CODE}...")
         scan_qr_code(QR_CODE, auth_token, session)
