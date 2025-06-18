@@ -3,13 +3,19 @@ import random
 import requests
 from urllib.parse import urlencode, parse_qs, urlsplit
 
+from config import (
+    QR_CODE,
+    PHONE_NUMBER,
+    PASSWORD,
+    OAUTH2_BASE_URL,
+    GAMES_BASE_URL,
+    LOGIN_FORM_URL,
+    REDIRECT_URI,
+    CLIENT_ID,
+    CHECKIN_URL
+)
+
 # --- Constants ---
-OAUTH2_BASE_URL = 'https://auth.profi.lobyco.net/oauth2'
-GAMES_BASE_URL = 'https://api.profi.lobyco.net/game/mobile-app/v1/games'
-LOGIN_FORM_URL = 'https://idp.profi.lobyco.net/api/web/v1/session'
-REDIRECT_URI = 'https://mobile-app/auth-redirect'
-CLIENT_ID = 'mobile-app'
-CHECKIN_URL = 'https://api.profi.lobyco.net/payment/mobile-app/v1/checkin'
 BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 BASE67 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.!~'
 
@@ -77,31 +83,13 @@ def scan_qr_code(qr_code, auth_token, session):
         print(f"Response: HTTP {response.status_code} - {data.get('messageTitle')} {data.get('messageBody')}")
 
 # --- Main ---
-def load_config():
-    with open('config.json') as f:
-        return json.load(f)
-
-def validate_config(config):
-    if [k for k in ['phoneNumber', 'password', 'qrCode'] if not config.get(k)]:
-        print(f"The configuration could not be loaded: Missing fields - {', '.join(missing)}")
-        return False
-    return True
-
 def main():
-    config = load_config()
-    if not validate_config(config):
-        return
-
-    phone_number = f"4{config['phoneNumber']}"
-    password = config['password']
-    qr_code = config['qrCode']
-
     with requests.Session() as session:
-        print(f"Authorising +{phone_number}...")
-        auth_token = get_auth_token(phone_number, password, session)
+        print(f"Authorising +{PHONE_NUMBER}...")
+        auth_token = get_auth_token(PHONE_NUMBER, PASSWORD, session)
 
-        print(f"Scanning QR code {qr_code}...")
-        scan_qr_code(qr_code, auth_token, session)
+        print(f"Scanning QR code {QR_CODE}...")
+        scan_qr_code(QR_CODE, auth_token, session)
 
 if __name__ == "__main__":
     main()
