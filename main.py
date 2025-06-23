@@ -1,9 +1,8 @@
-import json
 import random
 import requests
 
 from urllib.parse import urlencode, parse_qs, urlsplit
-from bot_server import record_prize
+from bot_server import record_prize, get_random_qr
 
 from config import (
     QR_CODE,
@@ -130,13 +129,23 @@ def play_game(auth_token, session):
 def main():
     with requests.Session() as session:
         print(f"Authorising +{PHONE_NUMBER}...")
+        qr_code = QR_CODE
+
+        if qr_code is None:
+            print("No QR code provided, fetching a random one...")
+            qr_code = get_random_qr(session)
+
+        if qr_code is None:
+            print("Cannot proceed without a QR Code!")
+            return
+
         auth_token = get_auth_token(PHONE_NUMBER, PASSWORD, session)
 
         print(f"Playing the daily game...")
         play_game(auth_token, session)
 
-        print(f"Scanning QR code {QR_CODE}...")
-        scan_qr_code(QR_CODE, auth_token, session)
+        print(f"Scanning QR code {qr_code}...")
+        scan_qr_code(qr_code, auth_token, session)
 
 if __name__ == "__main__":
     main()

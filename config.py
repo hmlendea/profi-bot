@@ -17,16 +17,21 @@ def load_config():
         config = json.load(f)
 
     # Validare
-    required_fields = ['qrCode', 'phoneNumber', 'password']
+    required_fields = ['phoneNumber', 'password']
     missing = [field for field in required_fields if field not in config or not config[field]]
     if missing:
+        raise ValueError(f"The configuration could not be loaded: Missing fields - {', '.join(missing)}")
+
+    required_fields = ['phoneNumber', 'password']
+    missing = [field for field in required_fields if field not in config or not config[field]]
+    if missing and not config.get("botServerBaseUrl"):
         raise ValueError(f"The configuration could not be loaded: Missing fields - {', '.join(missing)}")
 
     return config
 
 cfg = load_config()
 
-QR_CODE = cfg["qrCode"]
+QR_CODE = cfg.get("qrCode", None)
 PHONE_NUMBER = "4" + cfg["phoneNumber"] if cfg["phoneNumber"].startswith("07") else cfg["phoneNumber"]
 PASSWORD = cfg["password"]
 BOT_SERVER_BASE_URL = cfg["botServerBaseUrl"] if "botServerBaseUrl" in cfg else None
