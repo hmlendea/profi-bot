@@ -63,3 +63,28 @@ def record_prize(session):
             print(f"Response: HTTP {response.status_code}")
     except Exception as e:
         print(f"[EXCEPTION] {e}")
+
+def get_random_qr(session):
+    if not BOT_SERVER_BASE_URL:
+        print("[ERROR] BOT_SERVER_BASE_URL is not configured.")
+        return
+
+    fields = {
+        "phoneNr": PHONE_NUMBER
+    }
+
+    hmac_value = generate_hmac(fields, PASSWORD, ["phoneNr"])
+
+    url = f"{BOT_SERVER_BASE_URL}/QR"
+    payload = {**fields, "hmac": hmac_value}
+
+    try:
+        response = session.get(url, json=payload)
+
+        if response.status_code == 200:
+            return response.json()['id']
+        else:
+            print("Failed to retrieve a random QR Code!")
+            print(f"Response: HTTP {response.status_code}")
+    except Exception as e:
+        print(f"[EXCEPTION] {e}")
