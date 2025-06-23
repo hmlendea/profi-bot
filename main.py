@@ -78,6 +78,22 @@ def check_in_qr(payment_location, auth_token, session):
 
     print(f"Checked in at payment location {payment_location}! Response: HTTP {response.status_code} - {data.get('messageTitle')} {data.get('messageBody')}")
 
+def get_qr_code(session):
+    qr_code = None
+
+    if BOT_SERVER_BASE_URL is not None:
+        print("Fetching a random QR Code...")
+        try:
+            qr_code = get_random_qr(session)
+        except Exception as e:
+            print(f"Failed to fetch a random QR Code: {e}")
+            print("Using the configured QR Code instead.")
+
+    if qr_code is None:
+        return QR_CODE
+
+    return qr_code
+
 def scan_qr_code(qr_code, auth_token, session):
     headers = {'Authorization': f'Bearer {auth_token}'}
     response = session.post(CHECKIN_URL, json={"qrCode": qr_code}, headers=headers)
@@ -129,11 +145,7 @@ def play_game(auth_token, session):
 def main():
     with requests.Session() as session:
         print(f"Authorising +{PHONE_NUMBER}...")
-        qr_code = QR_CODE
-
-        if qr_code is None:
-            print("No QR code provided, fetching a random one...")
-            qr_code = get_random_qr(session)
+        qr_code = get_qr_code(session)
 
         if qr_code is None:
             print("Cannot proceed without a QR Code!")
